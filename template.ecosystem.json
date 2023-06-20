@@ -2,7 +2,7 @@
     "apps": [
         {
             "name": "rep.autobot.tf",
-            "script": "dist/server/index.js",
+            "script": "dist/index.js",
             "exec_mode": "fork",
             "shutdown_with_message": false,
             "max_memory_restart": "1500M",
