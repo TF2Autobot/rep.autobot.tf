@@ -25,7 +25,13 @@ export default class Json {
                 return res.status(400).json({ success: false, message: 'SteamID undefined.' });
             }
 
-            const steamID = new SteamID(input);
+            let steamID: SteamID;
+
+            try {
+                steamID = new SteamID(input);
+            } catch (err) {
+                return res.status(400).json({ success: false, err });
+            }
 
             if (!steamID.isValid()) {
                 return res.status(400).json({ success: false, message: 'SteamID entered not valid.' });
@@ -36,7 +42,6 @@ export default class Json {
                 steamID: steamID.toString(),
                 checkMptf: !!query
             });
-
             checkReputation
                 .isBanned()
                 .then(result => {
