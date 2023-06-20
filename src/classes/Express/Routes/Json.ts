@@ -50,7 +50,7 @@ export default class Json {
 
         router.get('/github/untrusted', (req, res) => {
             log.info(`Got GET /json/github/untrusted request`);
-            const savePath = path.join(__dirname, '../../../../../public/files/untrusted.json');
+            const savePath = path.join(__dirname, '../../../../public/files/untrusted.json');
             axios({
                 method: 'GET',
                 url: 'https://raw.githubusercontent.com/TF2Autobot/untrusted-steam-ids/master/untrusted.min.json'
