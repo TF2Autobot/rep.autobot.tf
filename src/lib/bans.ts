@@ -6,7 +6,7 @@ import { axiosAbortSignal } from './helpers';
 import Server from '../classes/Server';
 import { readFile, writeFile } from './files';
 import path from 'path';
-import { isMoreThanADay } from './tools/time';
+import { isMoreXHours } from './tools/time';
 import dayjs from 'dayjs';
 
 type Contents = {
@@ -83,7 +83,7 @@ export default class Bans {
 
         if (
             isExistInCached &&
-            (!isMoreThanADay(isExistInCached.last_update) ||
+            (!isMoreXHours({ time: isExistInCached.last_update, duration: 24 }) ||
                 (this.checkMptf && isExistInCached.isBanned) ||
                 isExistInCached.isBannedExcludeMptf)
         ) {

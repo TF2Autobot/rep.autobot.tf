@@ -161,12 +161,12 @@ export function uptime(): string {
     }
 }
 
-export function isMoreThanADay(time: number): boolean {
+export function isMoreXHours({ time, duration }: { time: number; duration: number }): boolean {
     const currentTime = dayjs();
     const inputTime = dayjs.unix(time);
     const hoursDiff = currentTime.diff(inputTime, 'hour');
 
-    if (hoursDiff > 24) {
+    if (hoursDiff > duration) {
         return true;
     }
 
