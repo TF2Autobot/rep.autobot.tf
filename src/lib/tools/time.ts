@@ -172,3 +172,15 @@ export function isMoreXHours({ time, duration }: { time: number; duration: numbe
 
     return false;
 }
+
+export function isMoreXMinutes({ time, duration }: { time: number; duration: number }): boolean {
+    const currentTime = dayjs();
+    const inputTime = dayjs.unix(time);
+    const minutesDiff = currentTime.diff(inputTime, 'minute');
+
+    if (minutesDiff > duration) {
+        return true;
+    }
+
+    return false;
+}
