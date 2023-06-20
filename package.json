@@ -1,6 +1,6 @@
 {
   "name": "rep.autobot.tf",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "separate process for handling pricelist and price changes from prices.tf for autobot.tf",
   "main": "dist/index.js",
   "scripts": {
