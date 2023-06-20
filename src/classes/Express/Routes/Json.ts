@@ -16,7 +16,7 @@ export default class Json {
 
         const router = express.Router();
 
-        router.get('/:steamid', (req, res) => {
+        router.get('/:steamid', rateLimiterUsingThirdParty, (req, res) => {
             const input = req.params.steamid;
             const query = req.query.checkMptf;
             log.debug(`Got /json/${input}`);
