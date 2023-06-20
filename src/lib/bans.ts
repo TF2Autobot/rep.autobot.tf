@@ -140,7 +140,7 @@ export default class Bans {
             with_error
         };
 
-        writeFile({ p, data: toReturn, json: true });
+        void writeFile({ p, data: toReturn, json: true });
         return toReturn;
     }
 
@@ -185,7 +185,7 @@ export default class Bans {
 
     private isSteamRepMarked(): Promise<SiteResult | undefined> {
         return new Promise((resolve, reject) => {
-            void axios({
+            axios({
                 url: 'https://steamrep.com/api/beta4/reputation/' + this.steamID,
                 params: {
                     json: 1
@@ -219,7 +219,7 @@ export default class Bans {
 
     private isMptfBanned(): Promise<SiteResult | undefined> {
         return new Promise((resolve, reject) => {
-            void axios({
+            axios({
                 method: 'POST',
                 url: 'https://marketplace.tf/api/Bans/GetUserBan/v2',
                 headers: {
