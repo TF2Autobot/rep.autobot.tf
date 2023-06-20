@@ -110,10 +110,30 @@ export default class Bans {
             isBannedExcludeMptf:
                 this._isCommunityBanned?.isBanned || this._isBptfBanned?.isBanned || this._isSteamRepBanned?.isBanned,
             contents: {
-                TF2Autobot: results[0].status === 'fulfilled' ? this._isCommunityBanned : 'Error',
-                'Marketplace.tf': results[1].status === 'fulfilled' ? this._isMptfBanned : 'Error',
-                'Backpack.tf': results[2].status === 'fulfilled' ? this._isBptfBanned : 'Error',
-                'Steamrep.com': results[3].status === 'fulfilled' ? this._isSteamRepBanned : 'Error'
+                TF2Autobot:
+                    results[0].status === 'fulfilled'
+                        ? this._isCommunityBanned
+                        : !isExistInCached.with_error
+                        ? isExistInCached?.contents?.TF2Autobot
+                        : 'Error',
+                'Marketplace.tf':
+                    results[1].status === 'fulfilled'
+                        ? this._isMptfBanned
+                        : !isExistInCached.with_error
+                        ? isExistInCached?.contents?.['Marketplace.tf']
+                        : 'Error',
+                'Backpack.tf':
+                    results[2].status === 'fulfilled'
+                        ? this._isBptfBanned
+                        : !isExistInCached.with_error
+                        ? isExistInCached?.contents?.['Backpack.tf']
+                        : 'Error',
+                'Steamrep.com':
+                    results[3].status === 'fulfilled'
+                        ? this._isSteamRepBanned
+                        : !isExistInCached.with_error
+                        ? isExistInCached?.contents?.['Steamrep.com']
+                        : 'Error'
             },
             obtained_time: isExistInCached ? isExistInCached.obtained_time : currentTime,
             last_update: currentTime,
