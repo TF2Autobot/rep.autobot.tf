@@ -1,0 +1,52 @@
+{
+  "name": "rep.autobot.tf",
+  "version": "1.0.0",
+  "description": "separate process for handling pricelist and price changes from prices.tf for autobot.tf",
+  "main": "dist/index.js",
+  "scripts": {
+    "release": "np --no-cleanup --no-publish",
+    "build": "tsc -p ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TF2Autobot/pricelist.autobot.tf.git"
+  },
+  "author": "IdiNium",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TF2Autobot/pricelist.autobot.tf/issues"
+  },
+  "homepage": "https://github.com/TF2Autobot/pricelist.autobot.tf#readme",
+  "dependencies": {
+    "@tf2autobot/filter-axios-error": "^1.5.1",
+    "axios": "^0.27.2",
+    "body-parser": "^1.20.2",
+    "change-case": "^4.1.2",
+    "dayjs": "^1.11.8",
+    "death": "^1.1.0",
+    "dotenv": "^16.3.1",
+    "express-rate-limit": "^6.7.0",
+    "install": "^0.13.0",
+    "pm2": "^5.3.0",
+    "pretty-ms": "^7.0.1",
+    "steamid": "^2.0.0",
+    "winston": "^3.9.0",
+    "winston-daily-rotate-file": "^4.7.1",
+    "write-file-atomic": "^5.0.1"
+  },
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.22.5",
+    "@tf2autobot/jsonlint": "^1.0.0",
+    "@types/death": "^1.1.2",
+    "@types/express": "^4.17.17",
+    "@types/write-file-atomic": "^4.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.60.0",
+    "@typescript-eslint/parser": "^5.60.0",
+    "eslint": "^8.43.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-tsdoc": "^0.2.17",
+    "prettier": "^2.8.8",
+    "typescript": "^5.1.3"
+  }
+}
