@@ -124,7 +124,6 @@ export default class Bans {
     }
 
     private isBptfBanned(): Promise<SiteResult | undefined> {
-        log.debug(`Getting backpack.tf for ${this.steamID}...`);
         return new Promise((resolve, reject) => {
             axios({
                 url: 'https://api.backpack.tf/api/users/info/v1',
@@ -164,7 +163,6 @@ export default class Bans {
     }
 
     private isSteamRepMarked(): Promise<SiteResult | undefined> {
-        log.debug(`Getting Steamrep.com for ${this.steamID}...`);
         return new Promise((resolve, reject) => {
             void axios({
                 url: 'https://steamrep.com/api/beta4/reputation/' + this.steamID,
@@ -199,7 +197,6 @@ export default class Bans {
     }
 
     private isMptfBanned(): Promise<SiteResult | undefined> {
-        log.debug(`Getting marketplace.tf for ${this.steamID}...`);
         return new Promise((resolve, reject) => {
             void axios({
                 method: 'POST',
@@ -244,7 +241,6 @@ export default class Bans {
     }
 
     private isListedUntrusted(attempt: 'first' | 'retry' = 'first'): Promise<SiteResult | undefined> {
-        log.debug(`Getting untrusted list from Github for ${this.steamID}...`);
         return new Promise((resolve, reject) => {
             readFile({ p: path.join(__dirname, '../../public/files/untrusted.json'), json: true })
                 .then(data => {
