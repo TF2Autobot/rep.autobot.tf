@@ -54,6 +54,8 @@ export default class Bans {
 
     private _isMptfBanned: SiteResult = null;
 
+    private untrustedPath: string = path.join(__dirname, '../../public/files/untrusted.json');
+
     private readonly server: Server;
 
     private readonly steamID: string;
@@ -263,48 +265,54 @@ export default class Bans {
 
     private isListedUntrusted(attempt: 'first' | 'retry' = 'first'): Promise<SiteResult | undefined> {
         return new Promise((resolve, reject) => {
-            readFile({ p: path.join(__dirname, '../../public/files/untrusted.json'), json: true })
-                .then(data => {
-                    const untrusted = (data as UntrustedJson).steamids[this.steamID];
-                    if (untrusted === undefined) {
+            axios({
+                method: 'GET',
+                url: 'https://raw.githubusercontent.com/TF2Autobot/untrusted-steam-ids/master/untrusted.min.json',
+                signal: axiosAbortSignal(60000)
+            })
+                .then(response => {
+                    const results = (response.data as UntrustedJson).steamids[this.steamID];
+
+                    if (results === undefined) {
                         return resolve({ isBanned: false });
                     }
 
                     this._isCommunityBanned = {
                         isBanned: true,
-                        content: `Reason: ${untrusted.reason} - Source: ${untrusted.source}`
+                        content: `Reason: ${results.reason} - Source: ${results.source}`
                     };
+
+                    writeFile({ p: this.untrustedPath, data: response.data, json: true }).catch(err => {
+                        log.error('Error saving untrusted file:', err);
+                    });
                     return resolve(this._isCommunityBanned);
                 })
-                .catch(() => {
-                    log.error('Error reading untrusted file');
+                .catch((err: AxiosError) => {
+                    if (err instanceof AbortSignal && attempt !== 'retry') {
+                        return this.isListedUntrusted('retry');
+                    }
+                    if (err) {
+                        log.warn('Failed to get data from Github');
+                        log.debug(err instanceof AxiosError ? filterAxiosError(err) : err);
+                    }
 
-                    axios({
-                        method: 'GET',
-                        url: 'https://raw.githubusercontent.com/TF2Autobot/untrusted-steam-ids/master/untrusted.min.json',
-                        signal: axiosAbortSignal(60000)
-                    })
-                        .then(response => {
-                            const results = (response.data as UntrustedJson).steamids[this.steamID];
+                    log.warn('Getting cached data...');
 
-                            if (results === undefined) {
+                    readFile({ p: this.untrustedPath, json: true })
+                        .then(data => {
+                            const untrusted = (data as UntrustedJson).steamids[this.steamID];
+                            if (untrusted === undefined) {
                                 return resolve({ isBanned: false });
                             }
 
                             this._isCommunityBanned = {
                                 isBanned: true,
-                                content: `Reason: ${results.reason} - Source: ${results.source}`
+                                content: `Reason: ${untrusted.reason} - Source: ${untrusted.source}`
                             };
                             return resolve(this._isCommunityBanned);
                         })
-                        .catch((err: AxiosError) => {
-                            if (err instanceof AbortSignal && attempt !== 'retry') {
-                                return this.isListedUntrusted('retry');
-                            }
-                            if (err) {
-                                log.warn('Failed to get data from Github');
-                                log.debug(err instanceof AxiosError ? filterAxiosError(err) : err);
-                            }
+                        .catch(() => {
+                            log.error('Error reading untrusted file');
                             reject(err instanceof AxiosError ? filterAxiosError(err) : err);
                         });
                 });
