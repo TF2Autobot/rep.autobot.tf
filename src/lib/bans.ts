@@ -115,29 +115,29 @@ export default class Bans {
                 TF2Autobot:
                     results[0].status === 'fulfilled'
                         ? this._isCommunityBanned
-                        : !isExistInCached.with_error
-                        ? isExistInCached?.contents?.TF2Autobot
+                        : !isExistInCached?.with_error
+                        ? isExistInCached.contents?.TF2Autobot
                         : 'Error',
                 'Marketplace.tf':
                     results[1].status === 'fulfilled'
                         ? this._isMptfBanned
-                        : !isExistInCached.with_error
-                        ? isExistInCached?.contents?.['Marketplace.tf']
+                        : !isExistInCached?.with_error
+                        ? isExistInCached.contents?.['Marketplace.tf']
                         : 'Error',
                 'Backpack.tf':
                     results[2].status === 'fulfilled'
                         ? this._isBptfBanned
-                        : !isExistInCached.with_error
-                        ? isExistInCached?.contents?.['Backpack.tf']
+                        : !isExistInCached?.with_error
+                        ? isExistInCached.contents?.['Backpack.tf']
                         : 'Error',
                 'Steamrep.com':
                     results[3].status === 'fulfilled'
                         ? this._isSteamRepBanned
-                        : !isExistInCached.with_error
-                        ? isExistInCached?.contents?.['Steamrep.com']
+                        : !isExistInCached?.with_error
+                        ? isExistInCached.contents?.['Steamrep.com']
                         : 'Error'
             },
-            obtained_time: isExistInCached ? isExistInCached.obtained_time : currentTime,
+            obtained_time: isExistInCached?.obtained_time ?? currentTime,
             last_update: currentTime,
             with_error
         };
