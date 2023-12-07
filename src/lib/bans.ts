@@ -86,9 +86,7 @@ export default class Bans {
         if (
             isExistInCached &&
             (isExistInCached.with_error ? !isMoreXMinutes({ time: isExistInCached.last_update, duration: 3 }) : true) &&
-            (!isMoreXHours({ time: isExistInCached.last_update, duration: 24 }) ||
-                (this.checkMptf && isExistInCached.isBanned) ||
-                isExistInCached.isBannedExcludeMptf)
+            !isMoreXHours({ time: isExistInCached.last_update, duration: 24 })
         ) {
             return isExistInCached;
         }
