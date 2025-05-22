@@ -100,6 +100,8 @@ export default class Bans {
 
         const with_error = results.some(r => r.status === 'rejected');
 
+        log.debug('check', this._isBptfBanned);
+
         const currentTime = dayjs().unix();
         const toReturn: IsBannedCached = {
             isBanned:
@@ -159,18 +161,13 @@ export default class Bans {
                 .then(response => {
                     const user = (response.data as BPTFGetUserInfo).users[this.steamID];
                     const isBptfBanned =
-                        user.bans && (user.bans.all !== undefined || user.bans['all features'] !== undefined);
+                        (user.bans && (user.bans.all !== undefined || user.bans['all features'] !== undefined)) ??
+                        false; //user.bans can be undefined so default to false
 
                     const banReason = user.bans ? user.bans.all?.reason ?? user.bans['all features']?.reason ?? '' : '';
 
-                    this._isBptfBanned = {
-                        isBanned: isBptfBanned,
-                        content: banReason
-                    };
-                    this._isBptfSteamRepBanned = {
-                        isBanned: user.bans?.steamrep_scammer === 1,
-                        content: banReason
-                    };
+                    this._isBptfBanned = { isBanned: isBptfBanned, content: banReason };
+                    this._isBptfSteamRepBanned = { isBanned: user.bans?.steamrep_scammer === 1, content: banReason };
 
                     return resolve(this._isBptfBanned);
                 })
