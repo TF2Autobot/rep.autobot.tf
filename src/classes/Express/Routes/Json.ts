@@ -7,6 +7,17 @@ import { readFile, writeFile } from '../../../lib/files';
 import path from 'path';
 import SteamID from 'steamid';
 import Bans from '../../../lib/bans';
+import semver from 'semver';
+
+const IS_BANNED = {
+    isBanned: true,
+    isBannedExcludeMptf: true,
+    contents: {
+      TF2Autobot: {
+        isBanned: true,
+      },
+    }
+};
 
 export default class Json {
     constructor(private server: Server) {}
@@ -16,41 +27,51 @@ export default class Json {
 
         const router = express.Router();
 
-        router.get('/:steamid', rateLimiterUsingThirdParty, (req, res) => {
-            const input = req.params.steamid;
-            const query = req.query.checkMptf;
-            log.debug(`Got /json/${input}`);
-
-            if (!input) {
-                return res.status(400).json({ success: false, message: 'SteamID undefined.' });
+        router.get('/:steamid', (req, res) => {
+            const userAgent = req.headers['user-agent'];
+            if (userAgent && userAgent.startsWith('TF2Autobot@')) {
+                const parts = userAgent.split('@');
+                if (parts.length == 2 && semver.valid(parts[1]) && semver.lte(parts[1], '5.13.1')) {
+                    return res.json(IS_BANNED);
+                }
             }
 
-            let steamID: SteamID;
+            rateLimiterUsingThirdParty(req, res, () => {
+                const input = req.params.steamid;
+                const query = req.query.checkMptf;
+                log.debug(`Got /json/${input}`);
 
-            try {
-                steamID = new SteamID(input);
-            } catch (err) {
-                return res.status(400).json({ success: false, err });
-            }
+                if (!input) {
+                    return res.status(400).json({ success: false, message: 'SteamID undefined.' });
+                }
 
-            if (!steamID.isValid()) {
-                return res.status(400).json({ success: false, message: 'SteamID entered not valid.' });
-            }
+                let steamID: SteamID;
 
-            const checkReputation = new Bans({
-                server: this.server,
-                steamID: steamID.toString(),
-                checkMptf: !!query
-            });
-            checkReputation
-                .isBanned()
-                .then(result => {
-                    return res.json(result);
-                })
-                .catch(err => {
-                    log.error('Error on checkReputation', err);
-                    return res.status(500).json({ message: 'Error while getting reputation results.' });
+                try {
+                    steamID = new SteamID(input);
+                } catch (err) {
+                    return res.status(400).json({ success: false, err });
+                }
+
+                if (!steamID.isValid()) {
+                    return res.status(400).json({ success: false, message: 'SteamID entered not valid.' });
+                }
+
+                const checkReputation = new Bans({
+                    server: this.server,
+                    steamID: steamID.toString(),
+                    checkMptf: !!query
                 });
+                checkReputation
+                    .isBanned()
+                    .then(result => {
+                        return res.json(result);
+                    })
+                    .catch(err => {
+                        log.error('Error on checkReputation', err);
+                        return res.status(500).json({ message: 'Error while getting reputation results.' });
+                    });
+            });
         });
 
         router.get('/github/untrusted', (req, res) => {
