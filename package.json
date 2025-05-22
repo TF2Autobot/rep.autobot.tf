@@ -19,7 +19,7 @@
   "homepage": "https://github.com/TF2Autobot/pricelist.autobot.tf#readme",
   "dependencies": {
     "@tf2autobot/filter-axios-error": "^1.5.3",
-    "axios": "^1.4.0",
+    "axios": "^1.9.0",
     "body-parser": "^1.20.2",
     "change-case": "^4.1.2",
     "dayjs": "^1.11.8",
