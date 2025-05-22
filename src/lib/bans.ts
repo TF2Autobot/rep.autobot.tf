@@ -172,7 +172,7 @@ export default class Bans {
                         content: banReason
                     };
 
-                    return resolve({ isBanned: isBptfBanned, content: banReason });
+                    return resolve(this._isBptfBanned);
                 })
                 .catch((err: AxiosError) => {
                     if (err) {
